@@ -77,3 +77,8 @@ def delete_person(person_id: int, db: Session = Depends(get_db)):
     db.delete(db_person)
     db.commit()
     return {"detail": "Person deleted"}
+
+
+    #conteinizar a automação
+    #subir para o dockerhub
+    #cirar uma automação CI
