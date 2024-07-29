@@ -31,5 +31,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/docker-fastapi-app:latest
-            ${{ secrets.DOCKER_USERNAME }}/docker-fastapi-app:${{ github.run_number }}
+            ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:latest
+            ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:${{ github.run_number }}
