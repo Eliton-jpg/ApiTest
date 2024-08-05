@@ -1,28 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  creationTimestamp: "2024-08-02T17:28:15Z"
-  name: my-api-service
+  name: my-api-service-2
   namespace: default
-  resourceVersion: "22408"
-  uid: 65f4f8a3-d1fe-4727-99bf-5bffe3547b2d
 spec:
-  clusterIP: 10.103.162.137
-  clusterIPs:
-  - 10.103.162.137
-  externalTrafficPolicy: Cluster
-  internalTrafficPolicy: Cluster
-  ipFamilies:
-  - IPv4
-  ipFamilyPolicy: SingleStack
-  ports:
-  - nodePort: 32441
-    port: 80
-    protocol: TCP
-    targetPort: 80
   selector:
-    app: my-api
-  sessionAffinity: None
+    app: my-api-2
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
   type: NodePort
-status:
-  loadBalancer: {}
