@@ -17,7 +17,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: my-api
+      app: my-api-argocd
   strategy:
     rollingUpdate:
       maxSurge: 25%
