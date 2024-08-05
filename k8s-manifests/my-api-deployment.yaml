@@ -7,7 +7,7 @@ metadata:
       {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"my-api","namespace":"default"},"spec":{"replicas":null,"selector":{"matchLabels":{"app":"my-api"}},"template":{"metadata":{"labels":{"app":"my-api"}},"spec":{"containers":[{"image":"ltonrosendo/docker-fastapi-app:latest","name":"my-api-container","ports":[{"containerPort":80}]}]}}}}
   creationTimestamp: "2024-08-02T17:20:53Z"
   generation: 1
-  name: my-api
+  name: my-api-argocd
   namespace: default
   resourceVersion: "22068"
   uid: ffe73d6b-95ec-4d28-8d94-65a58e1af5d5
@@ -27,12 +27,12 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: my-api
+        app: my-api-argocd
     spec:
       containers:
       - image: ltonrosendo/docker-fastapi-app:latest
         imagePullPolicy: Always
-        name: my-api-container
+        name: my-api-argocd-container
         ports:
         - containerPort: 80
           protocol: TCP

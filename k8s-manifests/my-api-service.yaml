@@ -21,7 +21,7 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    app: my-api
+    app: my-api-argocd
   sessionAffinity: None
   type: NodePort
 status:
