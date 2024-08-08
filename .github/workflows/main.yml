@@ -33,3 +33,23 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:latest
             ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:${{ github.run_number }}
+
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v3
+        with:
+          repository: Eliton-jpg/Gitops
+          path: gitops-repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update image tag in values.yaml
+        run: |
+          sed -i 's|repository:.*|repository: '${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:${{ github.run_number }}'|' gitops-repo/my-api/values.yaml
+
+      - name: Commit and push changes
+        run: |
+          cd gitops-repo
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add my-api/values.yaml
+          git commit -m "Update image tag to ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:${{ github.run_number }}"
+          git push origin main
