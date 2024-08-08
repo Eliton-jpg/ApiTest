@@ -34,21 +34,20 @@ jobs:
             ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:latest
             ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:${{ github.run_number }}
 
-      - name: Checkout GitOps repo
+      - name: Check out GitOps repo
         uses: actions/checkout@v3
         with:
           repository: Eliton-jpg/Gitops
+          token: ${{ secrets.GITOPS_REPO_TOKEN }}
           path: gitops-repo
-          token: ${{ secrets.GITOPS_REPO_ACCESS_TOKEN }}
-          ref: main
 
       - name: Update image tag in values.yaml
         run: |
-          sed -i 's|repository:.*|repository: '${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:${{ github.run_number }}'|' gitops-repo/my-api/values.yaml
+          sed -i 's|tag:.*|tag: "${{ github.run_number }}"|' gitops-repo/my-api/values.yaml
 
       - name: Commit and push changes
+        working-directory: gitops-repo
         run: |
-          cd gitops-repo
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add my-api/values.yaml
