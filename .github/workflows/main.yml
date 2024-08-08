@@ -40,6 +40,7 @@ jobs:
           repository: Eliton-jpg/Gitops
           path: gitops-repo
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main # Adicione esta linha para especificar o branch
 
       - name: Update image tag in values.yaml
         run: |
