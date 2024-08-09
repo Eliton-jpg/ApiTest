@@ -78,6 +78,11 @@ def delete_person(person_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"detail": "Person deleted"}
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+
 
     #conteinizar a automação
     #subir para o dockerhub
