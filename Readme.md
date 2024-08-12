@@ -165,4 +165,4 @@ jobs:
 - Dentro do Argo CD, foi criada uma nova aplicação apontando para o repositório privado onde os Helm Charts estão armazenados.
 - O Argo CD foi configurado para monitorar as alterações nesse repositório e sincronizar automaticamente o estado do cluster Kubernetes com os manifests presentes no repositório.
 - A aplicação no Argo CD foi configurada para usar o repositório privado, especificando o caminho do Helm Chart e a branch correta.
-![ArgoCd Aplication](ApiTest\imagens\imagem.png)
+![ArgoCd Aplication](https://github.com/Eliton-jpg/ApiTest/blob/main/imagens/imagem.png)
