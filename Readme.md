@@ -60,3 +60,109 @@ def delete_person(person_id: int, db: Session = Depends(get_db)):
 def health_check():
     return {"status": "ok"}
 ~~~
+
+## Banco de Dados
+O banco de dados adotado nesse código fora feito utilizando SQLAlchemy, dividi em dois arquivos
+ ### Database.py 
+ Este arquivo é responsável por configurar a conexão com o banco de dados e fornecer as ferramentas necessárias para interagir com ele.
+ ~~~python
+ from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"  
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+ ~~~
+### Models.py
+Este arquivo define as classes de modelo que representam as tabelas do banco de dados. No SQLAlchemy, essas classes são mapeadas diretamente para tabelas no banco de dados.
+~~~python
+from sqlalchemy import Column, Integer, String
+from database import Base
+
+class Person(Base):
+    __tablename__ = "people"
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, index=True)
+    cidade = Column(String, index=True)
+~~~
+# Continuous Integration
+ Fora feito um GitHub Actions, para fazer a integração continua da imagem Docker na Arquitetura da Aplicação
+ ˋˋˋ
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:latest
+            ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:${{ github.run_number }}
+
+      - name: Check out GitOps repo
+        uses: actions/checkout@v3
+        with:
+          repository: Eliton-jpg/Gitops
+          token: ${{ secrets.GITOPS_REPO_ACCESS_TOKEN }}
+          path: gitops-repo
+
+      - name: Update image tag and repository in values.yaml
+        run: |
+          sed -i 's|repository:.*|repository: '${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app'|' gitops-repo/my-api/values.yaml
+          sed -i 's|tag:.*|tag: "${{ github.run_number }}"|' gitops-repo/my-api/values.yaml
+
+      - name: Commit and push changes
+        working-directory: gitops-repo
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add my-api/values.yaml
+          git commit -m "Update image repository and tag to ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:${{ github.run_number }}"
+          git push origin main
+ ˋˋˋ
+# Continuous Deployment
+## Preparação do Ambiente:
+- Minikube foi utilizado como ambiente de Kubernetes local para facilitar o desenvolvimento e testes. Ele foi iniciado para criar um cluster Kubernetes em uma máquina local.
+  
+- Argo CD, uma ferramenta declarativa de GitOps, foi instalada no cluster Minikube. O Argo CD permite gerenciar o estado das aplicações Kubernetes a partir de repositórios Git.
+  
+- Um repositório privado do GitHub foi configurado para armazenar os manifests de Kubernetes (Helm Charts) necessários para o deploy da aplicação
+## Configuração do Repositório e Autenticação:
+- Um par de chaves SSH foi gerado e configurado para permitir que o Argo CD acessasse o repositório privado do GitHub de forma segura.
+- As chaves SSH foram adicionadas ao Argo CD como um segredo no cluster Kubernetes, permitindo a autenticação automática para clonar o repositório privado.
+  
+## Configuração do Argo CD:
+- Dentro do Argo CD, foi criada uma nova aplicação apontando para o repositório privado onde os Helm Charts estão armazenados.
+- O Argo CD foi configurado para monitorar as alterações nesse repositório e sincronizar automaticamente o estado do cluster Kubernetes com os manifests presentes no repositório.
+- A aplicação no Argo CD foi configurada para usar o repositório privado, especificando o caminho do Helm Chart e a branch correta.
+![ArgoCd Aplication](ApiTest\imagens\imagem.png)
