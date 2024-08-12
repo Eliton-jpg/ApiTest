@@ -1,5 +1,5 @@
 # Fast-Api
-Esse réposito é dedicado para o desenvolvimento de uma simples Api em python utlizando Fast-Api.
+Esse réposito é dedicado para o desenvolvimento de uma aplicação simples em python utlizando Fast-Api.
 ## Main.py
 A main.py define uma API usando o FastAPI que interage com um banco de dados SQLAlchemy para gerenciar registros de pessoas. A API tem endpoints para criar, ler, atualizar e deletar pessoas no banco de dados. Além disso, inclui um endpoint /health para verificar a saúde da aplicação.
 ### Resumo dos Endpoints:
@@ -165,4 +165,12 @@ jobs:
 - Dentro do Argo CD, foi criada uma nova aplicação apontando para o repositório privado onde os Helm Charts estão armazenados.
 - O Argo CD foi configurado para monitorar as alterações nesse repositório e sincronizar automaticamente o estado do cluster Kubernetes com os manifests presentes no repositório.
 - A aplicação no Argo CD foi configurada para usar o repositório privado, especificando o caminho do Helm Chart e a branch correta.
+- Segue a imagem do ArgoCD
 ![ArgoCd Aplication](https://github.com/Eliton-jpg/ApiTest/blob/main/imagens/imagem.png)
+
+## Deploy da Aplicação:
+
+- O Helm Chart foi configurado com as definições da aplicação, incluindo a imagem Docker armazenada no Docker Hub e as configurações de deployment e serviço.
+- A imagem Docker da aplicação foi construída e enviada para o Docker Hub, utilizando um pipeline de CI/CD configurado no GitHub Actions.
+- Quando o código era atualizado, o GitHub Actions realizava o build da imagem Docker e atualizava o values.yaml no repositório privado com a nova tag da imagem.
+- O Argo CD automaticamente sincronizava a aplicação com a nova configuração, aplicando as mudanças no cluster Kubernetes.
