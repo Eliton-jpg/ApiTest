@@ -94,7 +94,7 @@ class Person(Base):
  Fora feito um GitHub Actions, para fazer a integração continua da imagem Docker na Arquitetura da Aplicação
 
 
-ˋˋˋ
+~~~yaml
 name: CI
 
 on:
@@ -151,7 +151,7 @@ jobs:
           git add my-api/values.yaml
           git commit -m "Update image repository and tag to ${{ secrets.DOCKERHUB_USER }}/docker-fastapi-app:${{ github.run_number }}"
           git push origin main
- ˋˋˋ
+ ~~~
 # Continuous Deployment
 ## Preparação do Ambiente:
 - Minikube foi utilizado como ambiente de Kubernetes local para facilitar o desenvolvimento e testes. Ele foi iniciado para criar um cluster Kubernetes em uma máquina local.
