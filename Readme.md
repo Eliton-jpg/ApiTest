@@ -93,8 +93,8 @@ class Person(Base):
 # Continuous Integration
  Fora feito um GitHub Actions, para fazer a integração continua da imagem Docker na Arquitetura da Aplicação
 
- 
- ˋˋˋ
+
+ˋˋˋ
 name: CI
 
 on:
