@@ -1,6 +1,7 @@
 
 FROM python:3.11-slim
 
+RUN apt --no-install-recommends install -y build-essential
 
 WORKDIR /app
 
