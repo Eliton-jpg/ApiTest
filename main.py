@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+from starlette.responses import Response
 
 from database import SessionLocal, engine, Base
 from models import Person as PersonModel
@@ -32,6 +34,20 @@ class Person(PersonBase):
 
     class Config:
         from_attributes = True
+
+# Métricas Prometheus
+REQUEST_COUNT = Counter('fastapi_request_count', 'Total number of requests', ['method', 'endpoint'])
+REQUEST_LATENCY = Histogram('fastapi_request_latency_seconds', 'Request latency', ['endpoint'])
+
+# Middleware para contar as requisições
+@app.middleware("http")
+async def add_metrics_middleware(request, call_next):
+    endpoint = request.url.path
+    method = request.method
+    with REQUEST_LATENCY.labels(endpoint).time():
+        response = await call_next(request)
+    REQUEST_COUNT.labels(method, endpoint).inc()
+    return response
 
 # Criar uma nova pessoa
 @app.post("/people/", response_model=Person)
@@ -78,12 +94,12 @@ def delete_person(person_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"detail": "Person deleted"}
 
+# Endpoint de saúde
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
 
-
-
-    #conteinizar a automação
-    #subir para o dockerhub
-    #cirar uma automação CI
+# Endpoint para expor métricas para o Prometheus
+@app.get("/metrics")
+def metrics():
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
