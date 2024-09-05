@@ -3,3 +3,8 @@ uvicorn
 sqlalchemy
 pydantic
 prometheus_client
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation-fastapi
+opentelemetry-exporter-jaeger
+opentelemetry-exporter-prometheus

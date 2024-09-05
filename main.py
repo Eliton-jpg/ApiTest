@@ -7,11 +7,12 @@ from starlette.responses import Response
 from database import SessionLocal, engine, Base
 from models import Person as PersonModel
 from pydantic import BaseModel
-
-# Cria as tabelas no banco de dados
-Base.metadata.create_all(bind=engine)
+from tracing import setup_tracing  # Importe a função setup_tracing
 
 app = FastAPI()
+
+# Passe o app como argumento para setup_tracing
+setup_tracing(app)
 
 # Dependência para obter a sessão do banco de dados
 def get_db():
